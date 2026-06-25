@@ -1,0 +1,14 @@
+# --- Raw data (large; kept locally, never committed) ---
+sdud/
+cdc_wonder/
+MMA_enrollment/
+SAMHSA/
+
+# --- Built database (regenerate with: python build_db.py) ---
+db/
+
+# --- Python ---
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
