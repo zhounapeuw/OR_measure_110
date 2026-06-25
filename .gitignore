@@ -12,3 +12,6 @@ __pycache__/
 *.pyc
 .ipynb_checkpoints/
 .venv/
+
+# --- Machine-specific convenience launcher (hardcodes a local Python path) ---
+run.bat

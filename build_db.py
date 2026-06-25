@@ -25,10 +25,13 @@ for sql_file in sorted(Path("sql").glob("*.sql")):
     print(f"running {sql_file.name} ...")
     con.execute(sql_file.read_text())
 
-# Quick sanity check that the SDUD view works.
+# Quick sanity checks.
 oregon_rows = con.execute(
     "SELECT COUNT(*) FROM raw_sdud WHERE \"State\" = 'OR'"
 ).fetchone()[0]
 print(f"OK - raw_sdud sees {oregon_rows:,} Oregon rows")
+
+rate_rows = con.execute("SELECT COUNT(*) FROM mart_overdose_rate").fetchone()[0]
+print(f"OK - mart_overdose_rate has {rate_rows} drug-year rows")
 
 con.close()

@@ -49,7 +49,9 @@ DATA_CHECKLIST.md    # data inventory, gaps, and harmonization plan
 
 - [x] Data collected (4 sources) and inventoried
 - [x] DuckDB set up; SDUD readable via `raw_sdud`
-- [ ] Views for CDC deaths + population; overdose rate per 100k
+- [x] CDC deaths + population views; annual overdose rate per 100k (`mart_overdose_rate`)
+- [ ] Quarterly aggregation of the overdose series
 - [ ] Enrollment and SAMHSA loaders
+- [ ] SDUD drug-class crosswalk (opioids, MOUD, naloxone, stimulants)
 - [ ] Quarterly Oregon panel (`mart_quarterly_panel`)
 - [ ] Interrupted-time-series analysis + validation
