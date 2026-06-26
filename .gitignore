@@ -1,13 +1,7 @@
 # --- Raw data (large; kept locally, never committed) ---
 data/
 
-# --- Built database (regenerate with: python build_db.py) ---
-db/
-
-# --- Tableau CSV exports (derived from the marts; regenerate by rebuilding) ---
-exports/
-
-# --- Staging CSVs produced by the Python loaders (regenerate by re-running them) ---
+# --- Oregon-only staging CSVs produced by the Python loaders (regenerate by re-running) ---
 staging/
 
 # --- Python ---
@@ -15,10 +9,3 @@ __pycache__/
 *.pyc
 .ipynb_checkpoints/
 .venv/
-
-# --- Local PostgreSQL cluster (machine-specific data dir, not version-controlled) ---
-pgdata/
-
-# --- Machine-specific convenience launchers (hardcode local paths) ---
-run.bat
-start_postgres.bat

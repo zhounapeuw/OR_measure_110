@@ -4,81 +4,76 @@ Analysis of drug-related outcomes in Oregon around Measure 110 (drug
 decriminalization, effective 2021-02-01) and its partial rollback under
 HB 4002 (recriminalization, effective 2024-09-01).
 
+## Pipeline
+
+```
+raw files (data/)  →  Python loaders  →  PostgreSQL (staging → marts)  →  Tableau
+```
+Thin Python loaders extract and lightly clean the raw source files into Oregon-only
+staging CSVs; PostgreSQL does all the transformation/analysis SQL and serves the
+result tables to Tableau Desktop over a live connection.
+
 ## Data sources
 
 | Folder | Source | What it is | Cadence |
 |--------|--------|------------|---------|
-| `sdud/` | Medicaid State Drug Utilization Data (CMS) | Prescriptions reimbursed by Medicaid, per drug | Quarterly, 2018–2025 |
-| `cdc_wonder/` | CDC WONDER Multiple Cause of Death | Oregon overdose deaths by drug category + population | Monthly, 2018–2024 |
-| `MMA_enrollment/` | Oregon OHA / OHP | Medicare–Medicaid dual-eligible enrollment | Monthly |
-| `SAMHSA/` | SAMHSA N-MHSS / N-SUMHSS | Treatment-facility surveys | Annual, 2019–2024 |
+| `data/sdud/` | Medicaid State Drug Utilization Data (CMS) | Prescriptions reimbursed by Medicaid, per drug | Quarterly, 2018–2025 |
+| `data/cdc_wonder/` | CDC WONDER Multiple Cause of Death | Oregon overdose deaths by drug category + population | Monthly, 2018–2024 |
+| `data/MMA_enrollment/` | Oregon OHA / OHP | Medicare–Medicaid dual-eligible enrollment | Monthly |
+| `data/SAMHSA/` | SAMHSA N-MHSS / N-SUMHSS | Treatment-facility surveys | Annual, 2019–2024 |
 
 See `DATA_CHECKLIST.md` for known gaps, source URLs, and the plan to harmonize
 everything to a quarterly Oregon panel.
 
 ## Setup
 
-Uses the `measure_110` conda environment (Python 3.12):
-
-```bash
-conda activate measure_110
-pip install duckdb        # if not already installed
-```
+- **Python:** the `measure_110` conda environment (Python 3.12) — used for the
+  loaders and the `psql` client.
+  ```bash
+  conda activate measure_110
+  ```
+- **PostgreSQL 17** installed via the EnterpriseDB installer, running as the Windows
+  service `postgresql-x64-17` (auto-starts at boot). Connection:
+  `host=127.0.0.1 port=5432 dbname=measure110 user=postgres password=postgres`.
 
 ## How to run
 
 ```bash
-python build_db.py
+# 1. Stage the raw data (Oregon-only) into staging/
+python loaders/load_sdud.py
+#    (more loaders to come: CDC deaths/population, enrollment, SAMHSA)
+
+# 2. Load + transform in PostgreSQL
+#    Create tables and load the staging CSVs with \copy, then run the sql/ files.
+#    (A build script will tie steps 1–2 together as the pipeline grows.)
 ```
 
-This creates/updates `db/measure110.duckdb`, runs every `.sql` file in
-`sql/` in order, and writes Tableau CSVs to `exports/`.
+## Tableau (live connection)
 
-## Postgres / Tableau (live connection)
-
-The analysis-ready mart tables are also published to a local PostgreSQL server so
-Tableau Desktop can connect live (the 4 GB of raw data stays in DuckDB).
-
-```bash
-# 1. Start the server (after a reboot). Or double-click start_postgres.bat
-pg_ctl -D pgdata -l pgdata/server.log start
-
-# 2. After rebuilding the marts, push them to Postgres
-python publish_to_postgres.py
-```
-
-Tableau Desktop -> Connect -> PostgreSQL:
-`localhost` / port `5432` / database `measure110` / user `postgres` / password `postgres`.
-
-(First-time server setup: `initdb -D pgdata -U postgres ...` then `createdb measure110`.
-Already done on this machine; `pgdata/` is git-ignored.)
+Tableau Desktop → Connect → PostgreSQL:
+`127.0.0.1` / port `5432` / database `measure110` / user `postgres` / password `postgres`.
+Connect to the mart tables (or use Custom SQL).
 
 ## Project layout
 
 ```
-build_db.py            # runs the .sql files; builds DuckDB + CSV exports
-publish_to_postgres.py # copies the mart tables from DuckDB into PostgreSQL
-sql/                   # the SQL, as plain readable files (run in name order)
-  01_raw_views.sql     #   views pointing at the raw source files
-  02_cdc_views.sql     #   CDC deaths + population
-  03_overdose_rate.sql #   annual overdose rate per 100k (mart_overdose_rate)
-  99_export.sql        #   write marts to exports/ for Tableau
-db/measure110.duckdb   # the DuckDB database (built by build_db.py)
-exports/               # Tableau-ready CSVs (regenerated each build)
-pgdata/                # local PostgreSQL data cluster (git-ignored)
-explore.ipynb          # exploration notebook (tables + charts)
-sdud/ cdc_wonder/ MMA_enrollment/ SAMHSA/   # raw data
+loaders/               # thin Python extract/clean -> staging CSVs
+  load_sdud.py         #   SDUD: filter to Oregon, combine 8 years
+sql/                   # PostgreSQL transformation & analysis SQL (run in name order)
+staging/               # Oregon-only staging CSVs (git-ignored; regenerate via loaders)
+data/                  # raw source files (git-ignored): sdud, cdc_wonder, MMA_enrollment, SAMHSA
+explore.ipynb          # exploration notebook (charts) — to be repointed to Postgres
 DATA_CHECKLIST.md      # data inventory, gaps, and harmonization plan
 ```
 
 ## Status
 
-- [x] Data collected (4 sources) and inventoried
-- [x] DuckDB set up; SDUD readable via `raw_sdud`
-- [x] CDC deaths + population views; annual overdose rate per 100k (`mart_overdose_rate`)
-- [x] Tableau feed: CSV export + live PostgreSQL connection
-- [ ] Quarterly aggregation of the overdose series
+- [x] Data collected (4 sources) and inventoried, consolidated under `data/`
+- [x] PostgreSQL (EDB) running as a service; `measure110` database created
+- [x] SDUD loader → Oregon-only staging CSV
+- [ ] Load SDUD into Postgres (`sdud_or` table)
+- [ ] CDC loader (deaths + population) + overdose rate mart, in Postgres SQL
 - [ ] Enrollment and SAMHSA loaders
 - [ ] SDUD drug-class crosswalk (opioids, MOUD, naloxone, stimulants)
-- [ ] Quarterly Oregon panel (`mart_quarterly_panel`)
+- [ ] Quarterly Oregon panel
 - [ ] Interrupted-time-series analysis + validation
