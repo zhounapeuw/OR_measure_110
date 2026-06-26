@@ -25,6 +25,13 @@ result tables to Tableau Desktop over a live connection.
 See `DATA_CHECKLIST.md` for known gaps, source URLs, and the plan to harmonize
 everything to a quarterly Oregon panel.
 
+## Documentation
+
+- [`docs/data_dictionary.md`](docs/data_dictionary.md) — every source file and table, columns explained
+- [`docs/methodology.md`](docs/methodology.md) — analytical decisions, rationale, and a dated decision log
+- [`docs/drug_crosswalk.md`](docs/drug_crosswalk.md) — how SDUD product names map to drug classes, with caveats
+- [`DATA_CHECKLIST.md`](DATA_CHECKLIST.md) — data inventory, known gaps, source URLs
+
 ## Setup
 
 - **Python:** the `measure_110` conda environment (Python 3.12) — used for the
@@ -59,7 +66,15 @@ Connect to the mart tables (or use Custom SQL).
 ```
 loaders/               # thin Python extract/clean -> staging CSVs
   load_sdud.py         #   SDUD: filter to Oregon, combine 8 years
+  load_cdc.py          #   CDC deaths + population
 sql/                   # PostgreSQL transformation & analysis SQL (run in name order)
+  00_create_tables.sql #   create + load the source tables from staging CSVs
+  10_overdose_rate.sql #   mart_overdose_rate (deaths per 100k by drug/year)
+  20_rx_by_class.sql   #   mart_rx_by_class (MOUD/naloxone Rx per quarter)
+docs/                  # methodology & reference notes
+  data_dictionary.md   #   every source file and table, columns explained
+  methodology.md       #   analytical decisions, rationale, decision log
+  drug_crosswalk.md    #   how SDUD product names map to drug classes (+ caveats)
 staging/               # Oregon-only staging CSVs (git-ignored; regenerate via loaders)
 data/                  # raw source files (git-ignored): sdud, cdc_wonder, MMA_enrollment, SAMHSA
 explore.ipynb          # exploration notebook (charts) — to be repointed to Postgres
