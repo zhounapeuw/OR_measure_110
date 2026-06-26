@@ -18,6 +18,9 @@ import duckdb
 ROOT = Path(__file__).resolve().parent
 os.chdir(ROOT)
 
+# Folder the SQL export step (99_export.sql) writes Tableau-ready CSVs into.
+Path("exports").mkdir(exist_ok=True)
+
 con = duckdb.connect("db/measure110.duckdb")
 
 # Run each SQL file in filename order.
