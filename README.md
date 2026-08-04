@@ -85,10 +85,11 @@ DATA_CHECKLIST.md      # data inventory, gaps, and harmonization plan
 
 - [x] Data collected (4 sources) and inventoried, consolidated under `data/`
 - [x] PostgreSQL (EDB) running as a service; `measure110` database created
-- [x] SDUD loader → Oregon-only staging CSV
-- [ ] Load SDUD into Postgres (`sdud_or` table)
-- [ ] CDC loader (deaths + population) + overdose rate mart, in Postgres SQL
-- [ ] Enrollment and SAMHSA loaders
-- [ ] SDUD drug-class crosswalk (opioids, MOUD, naloxone, stimulants)
-- [ ] Quarterly Oregon panel
-- [ ] Interrupted-time-series analysis + validation
+- [x] SDUD + CDC loaded into Postgres (`sdud_or`, `overdose_deaths`, `population`)
+- [x] Overdose-rate marts (annual + quarterly) with suppression bounds
+- [x] SDUD drug-class crosswalk + `mart_rx_by_class` (buprenorphine/naltrexone/naloxone)
+      — incl. fixes for renamed products and the fills-vs-units metric trap
+- [x] Tableau dashboard: overdose deaths vs. treatment access, one timeline w/ policy lines
+- [ ] SAMHSA loader (buprenorphine facility/client census, 2021–2024 as cross-check)
+- [ ] Interrupted-time-series statistics (the formal before/after test)
+- [ ] Optional: enrollment as per-enrollee denominator (Medicaid unwinding); validation pass

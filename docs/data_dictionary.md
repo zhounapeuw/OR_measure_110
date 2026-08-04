@@ -67,6 +67,29 @@ Annual overdose death **rate per 100,000** by drug, 2018–2024.
 | `rate_per_100k` | `deaths_est / population × 100000` |
 | `rate_low`, `rate_high` | bounds using 1× and 9× suppressed months |
 
+### `mart_overdose_rate_quarterly` *(mart)* — `sql/11_overdose_rate_quarterly.sql`
+Same as `mart_overdose_rate` but per **quarter** (2018–2024), for lining up with the
+policy dates. Extra/changed columns: `quarter`, `quarter_start` (real date), and
+`rate_per_100k_qtr` = quarterly deaths ÷ that year's population × 100000 (a *per-quarter*
+rate, ~¼ the annual). Well-populated drugs (fentanyl, meth) are clean; heavily-suppressed
+drugs have wide `rate_low`/`rate_high` bounds at this grain.
+
+### `cco_metrics` — `sql/30_cco.sql` (from `data/CCO/`)
+OHA CCO quality metrics, "Overall Population" export. One row per metric × CCO × year
+(85 metrics, 16 CCOs + `CCO statewide`, 2011–2024).
+| column | meaning |
+|---|---|
+| `year` | measurement year |
+| `metric_abbrev` / `metric_name` | metric code and full name |
+| `cco` | CCO name (or `CCO statewide`) |
+| `service_rate` | the rate, as a proportion 0–1 |
+| `denominator` | eligible population — **statewide row only** (confidentiality) |
+| `benchmark` | incentive benchmark, proportion 0–1 (NULL if not incentivized) |
+
+The SUD-treatment measure is **IET (NQF 0004)**; the incentivized 18+ variants are
+`IET_INI_18` (initiation, ~48.6% benchmark) and `IET_ENG_18` (engagement, ~18.1%),
+available **2019–2024**. `IET_*_1317` are the 13–17 slices (not benchmarked).
+
 ### `mart_rx_by_class` *(mart)* — `sql/20_rx_by_class.sql`
 Oregon Medicaid prescriptions per **quarter** for treatment/harm-reduction classes.
 See [`drug_crosswalk.md`](drug_crosswalk.md) for the name→class mapping.
@@ -75,4 +98,5 @@ See [`drug_crosswalk.md`](drug_crosswalk.md) for the name→class mapping.
 | `year`, `quarter` | period |
 | `quarter_start` | first day of the quarter (a real date, for Tableau) |
 | `drug_class` | buprenorphine_moud, naltrexone_moud, naloxone, methadone |
-| `total_prescriptions` | summed prescriptions in that class/quarter |
+| **`total_units`** | **quantity dispensed — USE THIS for trends** (immune to fill-frequency changes) |
+| `total_prescriptions` | summed *fills* — ⚠️ NOT comparable over time (buprenorphine fill frequency changed 5x; see `drug_crosswalk.md`) |
