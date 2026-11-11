@@ -106,6 +106,17 @@ simple Measure-110 attribution — this must be acknowledged in any conclusion.
       enrollment ended April 2023, disenrolling many Oregonians. SDUD sees only *Medicaid* claims, so
       declines from 2023 on may reflect fewer enrollees, not less per-person treatment. Interpret
       2023+ Medicaid measures with this caveat; consider normalizing per-enrollee via enrollment data.
+- **2026-08-12** — **ITS respecified as a continuous piecewise-linear spline** (one spec for
+  all series: fentanyl deaths, naloxone, buprenorphine). Knots fixed *a priori* at the two
+  policy dates — 2021 Q1 (Measure 110) and 2024 Q4 (first full quarter under HB 4002) — with
+  **slope changes only, no level-jump terms**. Rationale: (a) quarterly data cannot resolve an
+  "instantaneous" step, and the jump term (β2) competes with the slope-change term (β3) for the
+  same variance, making both unstable — the fitted "jump" appeared in the line but not in the
+  observations; (b) these mechanisms plausibly act gradually (programs ramp, supply spreads);
+  (c) a uniform spec prevents per-series fiddling. Trade-off (documented): a true overnight
+  effect would be absorbed into the first post-knot slope. HAC (Newey-West, 4 lags) retained.
+  Implementation note: the time index is computed from **calendar quarters**, so the NULLed
+  2022 Q3 buprenorphine quarter leaves a gap instead of shifting later quarters.
 - **2026-06-27** — Confirmed via the N-SSATS 2019 codebook that the `*BUPNUM` MOUD client
   variables are **banded categories** (e.g. `OPBUPNUM`: 1=0–4, 2=5–10, 3=11–20, 4=21–50,
   5=51+), with band cutoffs that differ by setting — whereas N-SUMHSS (2021+) records raw
