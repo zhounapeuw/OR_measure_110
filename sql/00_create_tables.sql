@@ -9,7 +9,9 @@
 -- Run this file from the project root so the \copy paths resolve:
 --     psql -h 127.0.0.1 -U postgres -d measure110 -w -f sql/00_create_tables.sql
 --
--- DROP ... IF EXISTS makes it idempotent: re-running rebuilds cleanly.
+-- DROP TABLE IF EXISTS: each table is deleted first and then
+-- rebuilt from the staging CSVs, so you always get a fresh copy - never
+-- duplicate rows, and no error if the table doesn't exist yet.
 -- (\copy is a psql client command, so this file is run with psql, not the server.)
 -- ============================================================
 
