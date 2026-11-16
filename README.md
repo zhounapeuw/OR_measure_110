@@ -65,25 +65,7 @@ sql/                   # PostgreSQL transformation & analysis SQL (run in name o
   00_create_tables.sql #   create + load the source tables from staging CSVs
   10_overdose_rate.sql #   mart_overdose_rate (deaths per 100k by drug/year)
   20_rx_by_class.sql   #   mart_rx_by_class (MOUD/naloxone Rx per quarter)
-docs/                  # methodology & reference notes
-  data_dictionary.md   #   every source file and table, columns explained
-  methodology.md       #   analytical decisions, rationale, decision log
-  drug_crosswalk.md    #   how SDUD product names map to drug classes (+ caveats)
-staging/               # Oregon-only staging CSVs (git-ignored; regenerate via loaders)
+staging/               # Oregon-only staging CSVs (git-ignored; recreate via loaders)
 data/                  # raw source files (git-ignored): sdud, cdc_wonder, MMA_enrollment, SAMHSA
-explore.ipynb          # exploration notebook (charts) — to be repointed to Postgres
-DATA_CHECKLIST.md      # data inventory, gaps, and harmonization plan
+explore.ipynb          # exploration notebook (charts)
 ```
-
-## Status
-
-- [x] Data collected (4 sources) and inventoried, consolidated under `data/`
-- [x] PostgreSQL (EDB) running as a service; `measure110` database created
-- [x] SDUD + CDC loaded into Postgres (`sdud_or`, `overdose_deaths`, `population`)
-- [x] Overdose-rate marts (annual + quarterly) with suppression bounds
-- [x] SDUD drug-class crosswalk + `mart_rx_by_class` (buprenorphine/naltrexone/naloxone)
-      — incl. fixes for renamed products and the fills-vs-units metric trap
-- [x] Tableau dashboard: overdose deaths vs. treatment access, one timeline w/ policy lines
-- [ ] SAMHSA loader (buprenorphine facility/client census, 2021–2024 as cross-check)
-- [ ] Interrupted-time-series statistics (the formal before/after test)
-- [ ] Optional: enrollment as per-enrollee denominator (Medicaid unwinding); validation pass
