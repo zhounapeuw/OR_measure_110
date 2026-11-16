@@ -1,0 +1,10 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+// The Tableau dashboards are fixed-size (1100 and 1200 px wide), wider than
+// Cayman's default ~1000 px text column. Widen the column so they fit.
+.main-content {
+  max-width: 1250px;
+}

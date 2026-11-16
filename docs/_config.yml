@@ -1,0 +1,4 @@
+# GitHub Pages settings for the project site (Settings -> Pages -> main /docs)
+theme: jekyll-theme-cayman
+title: Oregon Measure 110
+description: Overdose deaths and addiction treatment access around Oregon's drug decriminalization (2021) and rollback (2024)
