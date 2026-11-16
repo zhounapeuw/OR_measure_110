@@ -13,9 +13,9 @@ In February 2021 Oregon decriminalized possession of small amounts of drugs (**M
 ### Key findings
 
 1. **Fentanyl deaths were already rising before Measure 110.** The fentanyl overdose death rate nearly tripled before the policy (2.0 to 5.7 per 100,000, 2019–2020), kept rising after it took effect, peaked at 30.0 in 2023, then fell to 22.8 in 2024.
-2. **There is no defensible evidence that Measure 110 changed the fentanyl trend.** The slope change at Measure 110 is not significant (p = 0.65), and the timing overlaps with the national fentanyl supply surge.
+2. **There is no clear evidence that Measure 110 changed the fentanyl trend.** The slope change at Measure 110 is not significant (p = 0.65), and the timing overlaps with the national fentanyl supply surge.
 3. **Treatment access moved in different directions.** Medicaid naloxone (overdose reversal) rose after Measure 110. Medicaid buprenorphine (opioid addiction treatment) stopped growing and declined.
-4. **Every CCO is below the state's treatment initiation benchmark.** Statewide, 41.7% of new substance use disorder (SUD) diagnoses start treatment within 14 days vs. a 48.6% benchmark, and rural/frontier counties do worse than urban ones (38.8% vs. 43.3%).
+4. **Every CCO is below the state's treatment initiation benchmark.** Statewide, 41.7% of new substance use disorder (SUD) diagnoses start treatment within 14 days vs. a 48.6% benchmark, and rural/frontier counties perform worse than urban ones (38.8% vs. 43.3%).
 
 ---
 
@@ -26,7 +26,7 @@ In February 2021 Oregon decriminalized possession of small amounts of drugs (**M
 
 [Open the dashboard on Tableau Public ↗](https://public.tableau.com/app/profile/charles.zhou3999/viz/OregonMeasure110/OregonMeasure110OverdoseDeathsvs_TreatmentAccess)
 
-Quarterly overdose death rates for fentanyl (yellow) and methamphetamine (teal), with the two policy dates marked. Both drugs climb through 2023 and drop in 2024. The 2024 drop starts in **June 2024, before HB 4002** took effect, so it can't be credited to the rollback.
+Quarterly overdose death rates for fentanyl (yellow) and methamphetamine (teal), with the two policy dates marked. Both drugs climb through 2023 and drop in 2024. The 2024 drop starts in **June 2024, before HB 4002** took effect, so the dip can't be fully explained by the rollback.
 
 | Year | Fentanyl (per 100k) | Meth (per 100k) |
 |---|---|---|
@@ -38,7 +38,7 @@ Quarterly overdose death rates for fentanyl (yellow) and methamphetamine (teal),
 
 ### Did the policies change the trends? (Interrupted time series)
 
-Each series gets the same model: a trend line that's allowed to bend at Measure 110 and again at HB 4002. The gray dashed line is the pre-policy trend continued.
+Each series gets the same model: a trend line that's allowed to bend at Measure 110 and again at HB 4002. The gray dashed line is the pre-policy trend continued as if no external factor is influencing.
 
 <img src="img/its_fentanyl_spline.png" width="700">
 
@@ -52,9 +52,9 @@ Each series gets the same model: a trend line that's allowed to bend at Measure 
 
 **Buprenorphine:** growing steadily before Measure 110 (+57k units/quarter), then the trend reversed (−39k units/quarter, p < 0.001) and flattened out after HB 4002. Medicaid buprenorphine in 2024 was about 30% below its 2021 level.
 
-**What the data and stats show:** the clearest breaks are in treatment, not deaths. **HOWEVER** none of these can be pinned on the policies alone:
-- **Fentanyl supply shock** — the national fentanyl wave reached Oregon around the same time as Measure 110. Without a comparison state, the model can't separate the two.
-- **Medicaid unwinding (2023–24)** — Oregon Health Plan enrollment protections from the pandemic ended, which shrinks every Medicaid-based count, including buprenorphine.
+**What the data and stats show:** the clearest deviations in the trend are in treatment, not deaths. **HOWEVER** none of these can be pinned on the policies alone:
+- **Fentanyl supply shock** — the national fentanyl wave reached Oregon around the same time as Measure 110. Without a comparison state, the model can't separate the two - this can be future direction.
+- **Medicaid coverage change (2023–24)** — Oregon Health Plan enrollment protections from the pandemic ended, which decreases the Medicaid-based counts, including buprenorphine.
 - **OTC naloxone (2023)** — moves some naloxone outside of Medicaid data.
 
 ### Where is treatment falling short? (CCO and county)
