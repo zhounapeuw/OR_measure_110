@@ -14,8 +14,8 @@ HB 4002 (recriminalization, effective 2024-09-01).
 raw files (data/)  →  Python loaders  →  PostgreSQL (staging → marts)  →  Tableau
 ```
 Thin Python loaders extract and lightly clean the raw source files into Oregon-only
-staging CSVs; PostgreSQL does all the transformation/analysis SQL and serves the
-result tables to Tableau Desktop over a live connection.
+staging CSVs; PostgreSQL does all the transformation/analysis SQL and delivers the
+resulting tables to Tableau Desktop over a live connection.
 
 ## Data sources
 
