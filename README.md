@@ -26,16 +26,6 @@ resulting tables to Tableau Desktop over a live connection.
 | `data/MMA_enrollment/` | Oregon OHA / OHP | Medicare–Medicaid dual-eligible enrollment | Monthly |
 | `data/SAMHSA/` | SAMHSA N-MHSS / N-SUMHSS | Treatment-facility surveys | Annual, 2019–2024 |
 
-See `DATA_CHECKLIST.md` for known gaps, source URLs, and the plan to harmonize
-everything to a quarterly Oregon panel.
-
-## Documentation
-
-- [`docs/data_dictionary.md`](docs/data_dictionary.md) — every source file and table, columns explained
-- [`docs/methodology.md`](docs/methodology.md) — analytical decisions, rationale, and a dated decision log
-- [`docs/drug_crosswalk.md`](docs/drug_crosswalk.md) — how SDUD product names map to drug classes, with caveats
-- [`DATA_CHECKLIST.md`](DATA_CHECKLIST.md) — data inventory, known gaps, source URLs
-
 ## Setup
 
 - **Python:** the `measure_110` conda environment (Python 3.12) — used for the
