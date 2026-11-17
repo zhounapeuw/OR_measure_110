@@ -6,7 +6,7 @@ HB 4002 (recriminalization, effective 2024-09-01).
 
 **▶ [Project write-up: results & dashboards](https://zhounapeuw.github.io/OR_measure_110/)** · [methods](https://zhounapeuw.github.io/OR_measure_110/methods.html)
 
-![Overdose deaths dashboard](docs/img/tableau_overdose_deaths.png)
+![Fentanyl & meth overdose death rates](docs/img/overdose_deaths_quarterly.png)
 
 ## Pipeline
 
