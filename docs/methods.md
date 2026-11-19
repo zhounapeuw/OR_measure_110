@@ -17,7 +17,7 @@ raw files (data/)  →  Python loaders  →  PostgreSQL (staging → marts)  →
 ```
 
 - **Python loaders** (`loaders/`) only extract and lightly clean the raw files into Oregon-only staging CSVs. No analysis happens here.
-- **PostgreSQL** does all the transformation and analysis SQL (`sql/`) and serves the final "mart" tables.
+- **PostgreSQL** does all the transformation and analysis SQL (`sql/`) and creates the final "mart" tables.
 - **Tableau Desktop** reads the marts for the dashboards. The interrupted time series (ITS) stats are done in Python (`statsmodels`) on the same marts.
 
 Why the split: Python is better for messy file handling (Excel sheets, footers, 3.7 GB of CSVs), SQL is better for transparent, checkable logic. Every loader is safe to re-run and rebuilds from the untouched raw files.
@@ -26,9 +26,9 @@ Why the split: Python is better for messy file handling (Excel sheets, footers, 
 
 | Source | What it is | Grain | Years |
 |---|---|---|---|
-| **CMS State Drug Utilization Data (SDUD)** | Every outpatient prescription paid for by state Medicaid programs | drug package (NDC) × state × quarter | 2018–2025 |
-| **CDC WONDER** (multiple cause of death) | Oregon overdose deaths by drug category + Oregon population | month (deaths), year (population) | 2018–2024 |
-| **OHA CCO Metrics** | Oregon Health Authority quality metrics for each Coordinated Care Organization (CCO), incl. SUD treatment initiation & engagement (IET) | metric × CCO × year, and × county | 2019–2024 (IET) |
+| **CMS (Center for Medicare and Medicaid Services) State Drug Utilization Data (SDUD)** | Every outpatient prescription paid for by state Medicaid programs | drug package (NDC) × state × quarter | 2018–2025 |
+| **CDC (Centers for Disease Control and Prevention)  WONDER** (multiple cause of death) | Oregon overdose deaths by drug category + Oregon population | month (deaths), year (population) | 2018–2024 |
+| **OHA (Oregon Health Authority) CCO Metrics** | Oregon Health Authority quality metrics for each Coordinated Care Organization (CCO), incl. SUD treatment initiation & engagement (IET) | metric × CCO × year, and × county | 2019–2024 (IET) |
 
 - SDUD: 8 national files (~41M rows) filtered to **752,611 Oregon rows**.
 - CDC: 6 drug categories (fentanyl/synthetic opioids, meth, heroin, cocaine, methadone, Rx opioids), 612 drug-months.
@@ -36,18 +36,14 @@ Why the split: Python is better for messy file handling (Excel sheets, footers, 
 
 ### Key data decisions
 
-These are the decisions that changed the results the most if done wrong.
-
 | Issue | What I did | Why it matters |
 |---|---|---|
 | **Fills vs. units** | Used `units_reimbursed` (quantity dispensed), not number of prescriptions | Buprenorphine moved from weekly to monthly fills (units per Rx 9.3 → 47.7). Counting fills makes treatment look like it fell **~5×** when it didn't |
-| **Renamed products** | Drug-class crosswalk matches old *and* new SDUD product names (e.g. `BUPREN&NAL`, `BUP/NAL`, `BRIXADI`) and excludes look-alikes (`BUPROPION`, `IBUPROFEN`) | Missing renamed products undercounted recent years |
+| **Renamed products** | Drug name mapping matches old *and* new SDUD product names (e.g. `BUPREN&NAL`, `BUP/NAL`, `BRIXADI`) and excludes look-alikes (`BUPROPION`, `IBUPROFEN`) | Missing renamed products undercounted recent years |
 | **Suppressed death counts** | CDC hides monthly counts of 1–9. Kept them as flagged rows and carried a low / mid / high estimate (1 / 5 / 9 deaths) | Dropping them would bias early years (when fentanyl counts were small) downward |
 | **SDUD data hole** | 2022 Q3 buprenorphine has ~771 units vs ~1.3M in neighboring quarters. Set to NULL | Otherwise it reads as a fake 99% crash |
 | **County IET** | Used each county's "CCO statewide" row (all CCOs combined), not an average of CCO rows | Several CCOs serve each county and small CCO cells are suppressed. Averaging the visible CCOs gives the wrong rate (e.g. Lane: 0.472 vs true 0.399) |
 | **Map thresholds** | Split counties at the 2024 statewide averages (initiation 41.7%, engagement 16.5%), not the 48.6% incentive benchmark | Almost every county is below the benchmark, so it would make the map uninformative |
-
-More detail: [`methodology.md`](methodology.md) (dated decision log), [`drug_crosswalk.md`](drug_crosswalk.md), [`data_dictionary.md`](data_dictionary.md).
 
 ### Interrupted time series (ITS)
 
